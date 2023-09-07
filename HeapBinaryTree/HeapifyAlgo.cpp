@@ -1,96 +1,156 @@
 #include<iostream>
+#include<algorithm>
 using namespace std;
+
 class Heap
 {
-    public : 
-        int size; 
-        int arr[100];
-    public: 
-        Heap()
-        {
-            size =0;
-            arr[0]=-1;
-        }
-        void insertion(int val)
-        {
-            size = size+1;
-            int index = size;
-            arr[index] = val;
-            while( index > 1 )
-            {
-                int parent = index/2;
-                if( arr[parent] < arr[index] )
-                {
-                    swap(arr[parent],arr[index]);
-                    index = parent;
-                }
-                else
-                    return;
-            }
-        }
-        void print()
-        {
-            cout<<"Elements in the heap are : "<<endl;
-            for( int idx =1; idx <= size; idx++ )
-            {
-                cout<<arr[idx]<<" ";
-            }
-            cout<<endl;
-        }
-        
-};
-void display(int arr[], int size)
-        {
-            cout<<"Elements in the heap are : "<<endl;
-            for( int idx =1; idx <= size; idx++ )
-            {
-                cout<<arr[idx]<<" ";
-            }
-            cout<<endl;
-        }
-            /*
-                Heapify 
-                It's a algorithm for converting a normal set of array into a heap .
-                heap can be of two forms 
-                1. max heap.
-                2. min heap  
-            */
-        void MaxHeapify(int arr1[], int size ,int idx)
-        {
-            int largest = idx;
-            int leftchildidx = 2*idx;
-            int rightchildidx= 2*idx +1;
-            if( arr1[largest] < arr1[leftchildidx] && leftchildidx <= size )
-            {
-                largest = leftchildidx;
-            }
-            else if( arr1[largest] < arr1[rightchildidx] && rightchildidx <= size )
-            {
-                largest = rightchildidx;
-            }
-            if( largest != idx )
-            {
-                swap(arr1[largest],arr1[idx]);
-                MaxHeapify(arr1,size,largest);
-            }
-        }
-int main()
-{
-    int arr1[6] = {-1, 5, 2, 3, 8, 0};
-    // n=5 as we are not including zeroth index
-    int n=5;
-    display(arr1,n);
-    for (int idx = n / 2; idx > 0; idx--)
+public:
+    int size;
+    int arr[100];
+
+    Heap()
     {
-        MaxHeapify(arr1,n, idx);
+        size = 0;
+        arr[0] = -1;
     }
 
-    cout << "Elements in the heap are after Heapifying : " << endl;
-    for (int idx = 1; idx <= n; idx++)
+    void insertion(int val)
     {
-        cout << arr1[idx] << " ";
+        size = size + 1;
+        int index = size;
+        arr[index] = val;
+        while (index > 1)
+        {
+            int parent = index / 2;
+            if (arr[parent] < arr[index])
+            {
+                swap(arr[parent], arr[index]);
+                index = parent;
+            }
+            else
+                return;
+        }
+    }
+
+    void MaxHeapify(int idx)
+    {
+        int largest = idx;
+        int leftchildidx = 2 * idx;
+        int rightchildidx = 2 * idx + 1;
+        if (leftchildidx <= size && arr[largest] < arr[leftchildidx])
+        {
+            largest = leftchildidx;
+        }
+        if (rightchildidx <= size && arr[largest] < arr[rightchildidx])
+        {
+            largest = rightchildidx;
+        }
+        if (largest != idx)
+        {
+            swap(arr[largest], arr[idx]);
+            MaxHeapify(largest);
+        }
+    }
+
+    void MinHeapify(int idx)
+    {
+        int smallest = idx;
+        int leftchildidx = 2 * idx;
+        int rightchildidx = 2 * idx + 1;
+        if (leftchildidx <= size && arr[smallest] > arr[leftchildidx])
+        {
+            smallest = leftchildidx;
+        }
+        if (rightchildidx <= size && arr[smallest] > arr[rightchildidx])
+        {
+            smallest = rightchildidx;
+        }
+        if (smallest != idx)
+        {
+            swap(arr[smallest], arr[idx]);
+            MinHeapify(smallest);
+        }
+    }
+
+    void Heapsort()
+    {
+        int heapsize = size;
+        while (heapsize > 1)
+        {
+            swap(arr[heapsize], arr[1]);
+            heapsize--;
+            MaxHeapify(1);
+        }
+    }
+
+    void BuildMaxHeap()
+    {
+        for (int idx = size / 2; idx > 0; idx--)
+        {
+            MaxHeapify(idx);
+        }
+    }
+
+    void BuildMinHeap()
+    {
+        for (int idx = size / 2; idx > 0; idx--)
+        {
+            MinHeapify(idx);
+        }
+    }
+};
+
+void display(int arr[], int size)
+{
+    cout << "Elements in the heap are : " << endl;
+    for (int idx = 1; idx <= size; idx++)
+    {
+        cout << arr[idx] << " ";
     }
     cout << endl;
+}
 
+int main()
+{
+    int arr1[6] = {-1, 5, 2, 3, 8, 1};
+    int n = 5;
+
+    display(arr1, n);
+
+    Heap maxHeap;
+    maxHeap.size = n;
+    for (int i = 1; i <= n; i++)
+    {
+        maxHeap.arr[i] = arr1[i];
+    }
+
+    maxHeap.BuildMaxHeap();
+
+    cout << "Elements in the max heap are after building : " << endl;
+    display(maxHeap.arr, n);
+
+    maxHeap.Heapsort();
+
+    cout << "Max Heap Sorting: " << endl;
+    display(maxHeap.arr, n);
+
+    Heap minHeap;
+    minHeap.size = n;
+    for (int i = 1; i <= n; i++)
+    {
+        minHeap.arr[i] = arr1[i];
+    }
+
+    minHeap.BuildMinHeap();
+
+    cout << "Elements in the min heap are after building : " << endl;
+    display(minHeap.arr, n);
+
+    minHeap.Heapsort();
+
+    cout << "Min Heap Sorting: " << endl;
+    display(minHeap.arr, n);
+
+    cout << endl;
     return 0;
 }
